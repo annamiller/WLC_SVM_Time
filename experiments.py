@@ -92,7 +92,11 @@ def createDataTD(run_params, I_arr, states, net, t_array = None, **kwargs):
     trace_current = states['trace_current']
     net.restore()
     m_arrays = t_array
-    G_run = G_AL.run_regularly('''I_inj = inp*t_array(t+td*ms)''')
+    if m_arrays[0].values.ndim == 2:
+        G_run = G_AL.run_regularly('''I_inj = inp*t_array(t+td*ms,i%N_AL)''')
+    else:
+        G_run = G_AL.run_regularly('''I_inj = inp*t_array(t+td*ms)''')
+
     G_noise = G_AL.run_regularly('''I_noise = inp*noise*(2*rand() - 1)''')
     net.add(G_run,G_noise)
 
